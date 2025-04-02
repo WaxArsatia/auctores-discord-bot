@@ -10,6 +10,7 @@ import balanceHandler from './utility/balanceHandler';
 import freeHandler from './utility/freeHandler.';
 import topHandler from './utility/topHandler';
 import stealHandler from './utility/stealHandler.js';
+import partyFiftyFiftyHandler from './utility/partyFiftyFiftyHandler';
 
 const commandRegister = async (client: Client<boolean>) => {
   if (!process.env.DISCORD_TOKEN) {
@@ -28,6 +29,7 @@ const commandRegister = async (client: Client<boolean>) => {
   client.commands.set(freeHandler.data.name, freeHandler);
   client.commands.set(topHandler.data.name, topHandler);
   client.commands.set(stealHandler.data.name, stealHandler);
+  client.commands.set(partyFiftyFiftyHandler.data.name, partyFiftyFiftyHandler);
 
   const commands = [];
 
@@ -37,6 +39,7 @@ const commandRegister = async (client: Client<boolean>) => {
   commands.push(freeHandler.data.toJSON());
   commands.push(topHandler.data.toJSON());
   commands.push(stealHandler.data.toJSON());
+  commands.push(partyFiftyFiftyHandler.data.toJSON());
 
   const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
