@@ -20,6 +20,7 @@ import {
 
 const WAITING_DURATION = 15000; // 15 seconds
 const MIN_PARTICIPANTS = 2;
+const MAX_BET = 250000;
 
 const data = new SlashCommandBuilder()
   .setName('partyfiftyfifty')
@@ -40,6 +41,13 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     await interaction.reply({
       content: 'Bet amount must be positive!',
       flags: MessageFlags.Ephemeral,
+    });
+    return;
+  }
+
+  if (betAmount > MAX_BET) {
+    await interaction.reply({
+      content: `You cannot bet more than ${MAX_BET} coins!`,
     });
     return;
   }

@@ -30,6 +30,7 @@ A Discord economy bot featuring gambling and stealing mechanics.
 - **Party Games**: Multiple users can join a 50/50 gambling session with the same bet amount.
 - **Counter-steal Prevention**: Cannot steal from someone who recently stole from you.
 - **Free Coins**: Get 100 coins when your balance reaches 0.
+- **Bet Limits**: Maximum bet of 250,000 coins for all gambling games.
 
 ## Setup
 

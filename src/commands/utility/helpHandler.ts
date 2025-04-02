@@ -24,8 +24,8 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
       {
         name: '🎲 Gambling Commands',
         value:
-          '`/fiftyfifty <amount>` - 50/50 chance to double your bet\n' +
-          '`/partyfiftyfifty <amount>` - Start a party gambling game',
+          '`/fiftyfifty <amount>` - 50/50 chance to double your bet (max 250,000)\n' +
+          '`/partyfiftyfifty <amount>` - Start a party gambling game (max 250,000)',
       },
       {
         name: '🦹 Stealing System',

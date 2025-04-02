@@ -4,6 +4,8 @@ import {
 } from 'discord.js';
 import { getUserBalance, updateUserBalance } from '../../data/databaseStore.js';
 
+const MAX_BET = 250000;
+
 const data = new SlashCommandBuilder()
   .setName('fiftyfifty')
   .setDescription(
@@ -40,6 +42,14 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     });
     return;
   }
+
+  if (actualBetAmount > MAX_BET) {
+    await interaction.reply({
+      content: `You cannot bet more than ${MAX_BET} coins!`,
+    });
+    return;
+  }
+
   if (actualBetAmount > userBalance.balance) {
     await interaction.reply({
       content: `You don't have enough money! Your balance is ${userBalance.balance} coins.`,
