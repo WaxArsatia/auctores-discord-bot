@@ -7,6 +7,7 @@ import {
   ButtonStyle,
   ComponentType,
   userMention,
+  MessageFlags,
 } from 'discord.js';
 import { getUserBalance, updateUserBalance } from '../../data/databaseStore.js';
 import {
@@ -38,7 +39,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
   if (betAmount <= 0) {
     await interaction.reply({
       content: 'Bet amount must be positive!',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     return;
   }
@@ -98,7 +99,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     if (user.id === host.id) {
       await i.reply({
         content: "You're already in the game!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -107,7 +108,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     if (!currentSession || !currentSession.isActive) {
       await i.reply({
         content: 'This game session has ended.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -115,7 +116,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     if (currentSession.participants.has(user.id)) {
       await i.reply({
         content: "You're already in the game!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -123,7 +124,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     if (userBalance.balance < betAmount) {
       await i.reply({
         content: `You don't have enough balance! You need ${betAmount} coins.`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -134,7 +135,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
 
     await i.reply({
       content: `You joined the game! ${betAmount} coins have been deducted.`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     // Update embed with current participants
