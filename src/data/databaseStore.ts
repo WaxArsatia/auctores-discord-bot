@@ -8,6 +8,7 @@ interface UserBalance {
   balance: number;
   lastStolenBy?: string;
   cooldownSteal?: number;
+  protectedUntil?: number; // Add this new field
 }
 
 // In-memory database that will reset on app restart
@@ -76,6 +77,26 @@ export const setStealCooldown = (userId: string, timestamp: number): void => {
   if (userIndex !== -1) {
     balances[userIndex]!.cooldownSteal = timestamp;
   }
+};
+
+/**
+ * Set protection for a user after being stolen from
+ */
+export const setProtection = (userId: string, timestamp: number): void => {
+  const userIndex = balances.findIndex((user) => user.userId === userId);
+
+  if (userIndex !== -1) {
+    balances[userIndex]!.protectedUntil = timestamp;
+  }
+};
+
+/**
+ * Check if a user is currently protected
+ */
+export const isProtected = (userId: string): boolean => {
+  const user = balances.find((u) => u.userId === userId);
+  if (!user?.protectedUntil) return false;
+  return Date.now() < user.protectedUntil;
 };
 
 /**

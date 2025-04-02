@@ -8,10 +8,13 @@ import {
   updateUserBalance,
   setLastStolenBy,
   setStealCooldown,
+  isProtected,
+  setProtection,
 } from '../../data/databaseStore.js';
 
 // 4 hours in milliseconds
 const STEAL_COOLDOWN = 4 * 60 * 60 * 1000;
+const PROTECTION_DURATION = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
 
 const data = new SlashCommandBuilder()
   .setName('steal')
@@ -68,6 +71,16 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  // Check if target is protected
+  if (isProtected(target.id)) {
+    await interaction.reply({
+      content: `🛡️ ${userMention(
+        target.id
+      )} is currently protected from theft!`,
+    });
+    return;
+  }
+
   // Perform the steal attempt with 50% success rate
   const isSuccessful = Math.random() < 0.5;
 
@@ -81,13 +94,18 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     updateUserBalance(thief.id, newThiefBalance);
     updateUserBalance(target.id, newTargetBalance);
 
+    // Set protection for the target
+    setProtection(target.id, Date.now() + PROTECTION_DURATION);
+
     // Update target's lastStolenBy property to prevent counter-stealing
     setLastStolenBy(target.id, thief.id);
 
     await interaction.reply({
       content: `🔫 **Successful heist!** You stole all ${stolenAmount} coins from ${userMention(
         target.id
-      )}!`,
+      )}!\n🛡️ ${userMention(
+        target.id
+      )} is now protected from theft for 1 hour.`,
     });
   } else {
     // Failed steal - apply cooldown

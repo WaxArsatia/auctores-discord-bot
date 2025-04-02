@@ -5,19 +5,29 @@ A Discord economy bot featuring gambling and stealing mechanics.
 ## Features
 
 - 💰 Currency System
-- 🎲 50/50 Gambling
+- 🎲 50/50 Gambling (Single & Party)
 - 🦹 Steal from other users
+- 🛡️ Protection system after being stolen from
 - 📊 Leaderboard system
 - 🆓 Free coins for broke users
 
 ## Commands
 
-- `/balance [user]` - Check your or another user's balance
+- `/balance [user]` - Check your or another user's balance, cooldowns, and protection status
 - `/fiftyfifty <amount>` - Gamble with 50/50 chance to double your bet
-- `/steal <user>` - Attempt to steal all coins from another user
-- `/free` - Get free coins when broke
+- `/partyfiftyfifty <amount>` - Start a party 50/50 game where multiple users can join
+- `/steal <user>` - Attempt to steal all coins from another user (4h cooldown)
+- `/free` - Get free coins when your balance is 0
 - `/top` - View the top 10 richest users
 - `/ping` - Check if bot is responsive
+
+## Game Mechanics
+
+- **Stealing**: 50% chance to steal all coins from target. 4-hour cooldown on failed attempts.
+- **Protection**: Users are protected from theft for 1 hour after being stolen from.
+- **Party Games**: Multiple users can join a 50/50 gambling session with the same bet amount.
+- **Counter-steal Prevention**: Cannot steal from someone who recently stole from you.
+- **Free Coins**: Get 100 coins when your balance reaches 0.
 
 ## Setup
 

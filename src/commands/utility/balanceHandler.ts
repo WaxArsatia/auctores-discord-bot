@@ -3,7 +3,7 @@ import {
   type ChatInputCommandInteraction,
   userMention,
 } from 'discord.js';
-import { getUserBalance } from '../../data/databaseStore.js';
+import { getUserBalance, isProtected } from '../../data/databaseStore.js';
 
 const data = new SlashCommandBuilder()
   .setName('balance')
@@ -76,6 +76,16 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
       }
     } else {
       reply += '\n✅ You can steal from others now!';
+    }
+
+    // Add protection information
+    if (isProtected(targetUser.id)) {
+      const user = getUserBalance(targetUser.id, targetUser.username);
+      const timeLeftSeconds = Math.ceil(
+        (user.protectedUntil! - Date.now()) / 1000
+      );
+      const minutesLeft = Math.floor(timeLeftSeconds / 60);
+      reply += `\n🛡️ Protected from theft for **${minutesLeft} minutes**`;
     }
   }
 
