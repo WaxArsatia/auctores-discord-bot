@@ -58,7 +58,25 @@ bun start
 - Discord.js
 - Bun runtime
 - ESLint
+- JSON File Storage
 
 ## Development
 
-The bot uses an in-memory database that resets on restart. Commands are automatically registered on startup.
+The bot uses JSON file storage (`/data/database.json`) for persistent data storage. All user balances, cooldowns, and game states are preserved between bot restarts. The database file is automatically created on first run and is excluded from git tracking.
+
+### Database Structure
+
+```json
+{
+  "balances": [
+    {
+      "userId": "string",
+      "username": "string",
+      "balance": number,
+      "lastStolenBy": "string?",
+      "cooldownSteal": number?,
+      "protectedUntil": number?
+    }
+  ]
+}
+```
