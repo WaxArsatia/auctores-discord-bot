@@ -13,6 +13,7 @@ A Discord economy bot featuring gambling and stealing mechanics.
 
 ## Commands
 
+- `/help` - Show detailed information about bot commands and features
 - `/balance [user]` - Check your or another user's balance, cooldowns, and protection status
 - `/fiftyfifty <amount>` - Gamble with 50/50 chance to double your bet
 - `/partyfiftyfifty <amount>` - Start a party 50/50 game where multiple users can join
@@ -20,6 +21,7 @@ A Discord economy bot featuring gambling and stealing mechanics.
 - `/free` - Get free coins when your balance is 0
 - `/top` - View the top 10 richest users
 - `/ping` - Check if bot is responsive
+- `/givecoin <user> <amount>` - [ADMIN] Give coins to a user
 
 ## Game Mechanics
 
