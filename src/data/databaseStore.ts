@@ -1,6 +1,18 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
 
+interface UserItems {
+  safe?: {
+    expiresAt: number;
+    triggered?: boolean;
+  };
+  bodyguard?: {
+    expiresAt: number;
+    triggered?: boolean;
+  };
+  lockpick?: boolean;
+}
+
 interface UserBalance {
   userId: string;
   username: string;
@@ -8,6 +20,7 @@ interface UserBalance {
   lastStolenBy?: string;
   cooldownSteal?: number;
   protectedUntil?: number;
+  items?: UserItems; // Add items to user data
 }
 
 const DB_DIR = path.join(process.cwd(), 'data');
@@ -129,4 +142,101 @@ export const getTop10Balances = (): UserBalance[] => {
 export const getAllBalances = (): UserBalance[] => {
   const db = readDatabase();
   return [...db.balances];
+};
+
+export const buyItem = (userId: string, itemType: keyof UserItems): boolean => {
+  const db = readDatabase();
+  const user = db.balances.find((u) => u.userId === userId);
+  if (!user) return false;
+
+  // Initialize items object if it doesn't exist
+  if (!user.items) user.items = {};
+
+  const itemCosts = {
+    safe: Math.floor(user.balance * 0.1),
+    bodyguard: Math.floor(user.balance * 0.3),
+    lockpick: Math.floor(user.balance * 0.5),
+  };
+
+  const cost = itemCosts[itemType];
+
+  // Check if user can afford the item
+  if (user.balance < cost) return false;
+
+  // Check specific item conditions
+  if (itemType === 'lockpick' && user.items.lockpick) return false;
+
+  const now = Date.now();
+  const THREE_HOURS = 3 * 60 * 60 * 1000;
+
+  switch (itemType) {
+    case 'safe':
+      user.items.safe = {
+        expiresAt: now + THREE_HOURS,
+        triggered: false,
+      };
+      break;
+    case 'bodyguard':
+      user.items.bodyguard = {
+        expiresAt: now + THREE_HOURS,
+        triggered: false,
+      };
+      break;
+    case 'lockpick':
+      user.items.lockpick = true;
+      break;
+  }
+
+  // Deduct cost
+  user.balance -= cost;
+  writeDatabase(db);
+  return true;
+};
+
+export const getActiveItems = (userId: string): UserItems | undefined => {
+  const db = readDatabase();
+  const user = db.balances.find((u) => u.userId === userId);
+  if (!user?.items) return undefined;
+
+  const now = Date.now();
+  const items: UserItems = {};
+
+  // Check safe
+  if (
+    user.items.safe &&
+    !user.items.safe.triggered &&
+    now < user.items.safe.expiresAt
+  ) {
+    items.safe = user.items.safe;
+  }
+
+  // Check bodyguard
+  if (
+    user.items.bodyguard &&
+    !user.items.bodyguard.triggered &&
+    now < user.items.bodyguard.expiresAt
+  ) {
+    items.bodyguard = user.items.bodyguard;
+  }
+
+  // Check lockpick
+  if (user.items.lockpick) {
+    items.lockpick = true;
+  }
+
+  return Object.keys(items).length > 0 ? items : undefined;
+};
+
+export const triggerItem = (
+  userId: string,
+  itemType: 'safe' | 'bodyguard'
+): void => {
+  const db = readDatabase();
+  const user = db.balances.find((u) => u.userId === userId);
+  if (!user?.items) return;
+
+  if (user.items[itemType]) {
+    user.items[itemType]!.triggered = true;
+    writeDatabase(db);
+  }
 };

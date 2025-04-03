@@ -3,7 +3,11 @@ import {
   type ChatInputCommandInteraction,
   userMention,
 } from 'discord.js';
-import { getUserBalance, isProtected } from '../../data/databaseStore.js';
+import {
+  getUserBalance,
+  isProtected,
+  getActiveItems,
+} from '../../data/databaseStore.js';
 
 const data = new SlashCommandBuilder()
   .setName('balance')
@@ -86,6 +90,28 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
       );
       const minutesLeft = Math.floor(timeLeftSeconds / 60);
       reply += `\n🛡️ Protected from theft for **${minutesLeft} minutes**`;
+    }
+
+    // Add active items information
+    const activeItems = getActiveItems(targetUser.id);
+    if (activeItems) {
+      let itemsInfo = '\n\n🏪 Active Items:';
+      if (activeItems.safe) {
+        const timeLeft = Math.ceil(
+          (activeItems.safe.expiresAt - Date.now()) / 1000 / 60
+        );
+        itemsInfo += `\n🛡️ Safe: ${timeLeft} minutes remaining`;
+      }
+      if (activeItems.bodyguard) {
+        const timeLeft = Math.ceil(
+          (activeItems.bodyguard.expiresAt - Date.now()) / 1000 / 60
+        );
+        itemsInfo += `\n💂 Bodyguard: ${timeLeft} minutes remaining`;
+      }
+      if (activeItems.lockpick) {
+        itemsInfo += '\n🔐 Lockpick: Active';
+      }
+      reply += itemsInfo;
     }
   }
 

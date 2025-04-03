@@ -10,6 +10,8 @@ import {
   setStealCooldown,
   isProtected,
   setProtection,
+  getActiveItems,
+  triggerItem,
 } from '../../data/databaseStore.js';
 
 // 4 hours in milliseconds
@@ -81,16 +83,40 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  // Perform the steal attempt with 50% success rate
-  const isSuccessful = Math.random() < 0.5;
+  const thiefItems = getActiveItems(thief.id);
+  const targetItems = getActiveItems(target.id);
+
+  let successChance = 0.5;
+  if (thiefItems?.lockpick) {
+    successChance += 0.15;
+  }
+
+  // Perform the steal attempt
+  const isSuccessful = Math.random() < successChance;
 
   if (isSuccessful) {
-    // Successful steal - take all of target's balance
-    const stolenAmount = targetBalance.balance;
-    const newThiefBalance = thiefBalance.balance + stolenAmount;
-    const newTargetBalance = 0;
+    let stolenAmount = targetBalance.balance;
+
+    // Check if target has active protection items
+    if (targetItems?.bodyguard) {
+      triggerItem(target.id, 'bodyguard');
+      await interaction.reply({
+        content: `🛡️ ${userMention(
+          target.id
+        )}'s bodyguard blocked your theft attempt!`,
+      });
+      return;
+    }
+
+    if (targetItems?.safe) {
+      triggerItem(target.id, 'safe');
+      stolenAmount = Math.floor(stolenAmount * 0.5);
+    }
 
     // Update balances
+    const newThiefBalance = thiefBalance.balance + stolenAmount;
+    const newTargetBalance = targetBalance.balance - stolenAmount;
+
     updateUserBalance(thief.id, newThiefBalance);
     updateUserBalance(target.id, newTargetBalance);
 
@@ -101,7 +127,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     setLastStolenBy(target.id, thief.id);
 
     await interaction.reply({
-      content: `🔫 **Successful heist!** You stole all ${stolenAmount} coins from ${userMention(
+      content: `🔫 **Successful heist!** You stole ${stolenAmount} coins from ${userMention(
         target.id
       )}!\n🛡️ ${userMention(
         target.id
