@@ -10,6 +10,7 @@ A Discord economy bot featuring gambling and stealing mechanics.
 - 🛡️ Protection system after being stolen from
 - 📊 Leaderboard system
 - 🆓 Free coins for broke users
+- 🏪 Item shop with protective gear
 
 ## Commands
 
@@ -20,6 +21,7 @@ A Discord economy bot featuring gambling and stealing mechanics.
 - `/steal <user>` - Attempt to steal all coins from another user (4h cooldown)
 - `/free` - Get free coins when your balance is 0
 - `/top` - View the top 10 richest users
+- `/shop` - Buy items from the shop
 - `/ping` - Check if bot is responsive
 - `/givecoin <user> <amount>` - [ADMIN] Give coins to a user
 
@@ -31,6 +33,19 @@ A Discord economy bot featuring gambling and stealing mechanics.
 - **Counter-steal Prevention**: Cannot steal from someone who recently stole from you.
 - **Free Coins**: Get 100 coins when your balance reaches 0.
 - **Bet Limits**: Maximum bet of 250,000 coins for all gambling games.
+
+## Shop Items
+
+- **🛡️ Safe**: Protects 50% of coins when stolen. Costs 10% of current balance.
+- **💂 Bodyguard**: Complete protection from theft. Costs 30% of current balance.
+- **🔐 Lockpick**: Permanent +15% steal success chance. Costs 50% of current balance.
+
+### Item Details
+
+- Safe and Bodyguard last for 3 hours and are one-time use when triggered
+- Lockpick is permanent but cannot be stacked or purchased again
+- Item costs scale with your current balance
+- Protection items expire after 3 hours if not triggered
 
 ## Setup
 

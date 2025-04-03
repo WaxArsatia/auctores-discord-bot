@@ -19,7 +19,8 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
         value:
           '`/balance [user]` - Check balance, cooldowns, and protection status\n' +
           '`/free` - Get 100 coins when broke\n' +
-          '`/top` - View top 10 richest users',
+          '`/top` - View top 10 richest users\n' +
+          '`/shop` - Buy items from the shop',
       },
       {
         name: '🎲 Gambling Commands',
@@ -33,7 +34,17 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
           '`/steal <user>` - 50% chance to steal all coins from target\n' +
           '• 4-hour cooldown on failed attempts\n' +
           '• Target gets 1-hour protection after being stolen from\n' +
-          '• Cannot counter-steal from someone who just stole from you',
+          '• Cannot counter-steal from someone who just stole from you\n' +
+          '• Lockpick item increases steal success chance by 15%',
+      },
+      {
+        name: '🏪 Shop Items',
+        value:
+          '• Safe (10% of balance) - Protects 50% of coins when stolen\n' +
+          '• Bodyguard (30% of balance) - Complete theft protection\n' +
+          '• Lockpick (50% of balance) - Permanent +15% steal success\n' +
+          '• Items last 3 hours except Lockpick which is permanent\n' +
+          '• Protection items are one-time use when triggered',
       },
       {
         name: '🎮 Game Mechanics',
@@ -41,6 +52,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
           '• Starting balance: 1000 coins\n' +
           '• Free coins when balance hits 0\n' +
           '• Party games need minimum 2 players\n' +
+          '• Item costs scale with your current balance\n' +
           '• Protection system prevents theft spam',
       }
     )
