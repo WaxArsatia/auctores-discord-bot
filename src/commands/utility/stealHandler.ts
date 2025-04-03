@@ -12,6 +12,7 @@ import {
   setProtection,
   getActiveItems,
   triggerItem,
+  consumeLockpick,
 } from '../../data/databaseStore.js';
 
 // 4 hours in milliseconds
@@ -111,6 +112,11 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     if (targetItems?.safe) {
       triggerItem(target.id, 'safe');
       stolenAmount = Math.floor(stolenAmount * 0.5);
+    }
+
+    // Consume lockpick if it was used
+    if (thiefItems?.lockpick) {
+      consumeLockpick(thief.id);
     }
 
     // Update balances

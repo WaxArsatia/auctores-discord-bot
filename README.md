@@ -38,12 +38,13 @@ A Discord economy bot featuring gambling and stealing mechanics.
 
 - **🛡️ Safe**: Protects 50% of coins when stolen. Costs 10% of current balance.
 - **💂 Bodyguard**: Complete protection from theft. Costs 30% of current balance.
-- **🔐 Lockpick**: Permanent +15% steal success chance. Costs 50% of current balance.
+- **🔐 Lockpick**: +15% steal success chance. Costs 50% of current balance.
 
 ### Item Details
 
 - Safe and Bodyguard last for 3 hours and are one-time use when triggered
-- Lockpick is permanent but cannot be stacked or purchased again
+- Lockpick lasts for 15 minutes and is consumed on successful steal
+- Lockpick has a 4-hour cooldown between purchases
 - Item costs scale with your current balance
 - Protection items expire after 3 hours if not triggered
 

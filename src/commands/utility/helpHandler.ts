@@ -42,9 +42,9 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
         value:
           '• Safe (10% of balance) - Protects 50% of coins when stolen\n' +
           '• Bodyguard (30% of balance) - Complete theft protection\n' +
-          '• Lockpick (50% of balance) - Permanent +15% steal success\n' +
-          '• Items last 3 hours except Lockpick which is permanent\n' +
-          '• Protection items are one-time use when triggered',
+          '• Lockpick (50% of balance) - +15% steal success chance\n' +
+          '• Safe and Bodyguard last 3 hours (one-time use)\n' +
+          '• Lockpick lasts 15 minutes (one-time use, 4h cooldown)',
       },
       {
         name: '🎮 Game Mechanics',

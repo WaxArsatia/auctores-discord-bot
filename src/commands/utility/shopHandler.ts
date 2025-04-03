@@ -41,7 +41,8 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     safe: '🛡️ Safe: Protects 50% of your coins when stolen (3 hours, one-time use)',
     bodyguard:
       '💂 Bodyguard: Complete protection from theft (3 hours, one-time use)',
-    lockpick: '🔐 Lockpick: Permanent +15% steal success chance',
+    lockpick:
+      '🔐 Lockpick: +15% steal success chance (15 minutes, one-time use, 4h cooldown)',
   };
 
   const cost = itemCosts[itemType];
@@ -64,14 +65,22 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
       name: '✅ Purchase Successful',
       value: `You bought a ${itemType}!\nNew balance: ${
         userBalance.balance - cost
-      } coins`,
+      } coins${
+        itemType === 'lockpick'
+          ? '\n⚠️ Lockpick will expire in 15 minutes!'
+          : ''
+      }`,
     });
   } else {
     const reason =
       userBalance.balance < cost
         ? 'Insufficient balance!'
-        : itemType === 'lockpick' && userBalance.items?.lockpick
-        ? 'You already have a lockpick!'
+        : itemType === 'lockpick' &&
+          userBalance.items?.lockpick?.cooldownUntil &&
+          Date.now() < userBalance.items.lockpick.cooldownUntil
+        ? `Lockpick on cooldown! Available in ${Math.ceil(
+            (userBalance.items.lockpick.cooldownUntil - Date.now()) / 1000 / 60
+          )} minutes`
         : 'Purchase failed!';
 
     embed.addFields({

@@ -10,7 +10,10 @@ interface UserItems {
     expiresAt: number;
     triggered?: boolean;
   };
-  lockpick?: boolean;
+  lockpick?: {
+    expiresAt: number;
+    cooldownUntil?: number;
+  };
 }
 
 interface UserBalance {
@@ -163,28 +166,38 @@ export const buyItem = (userId: string, itemType: keyof UserItems): boolean => {
   // Check if user can afford the item
   if (user.balance < cost) return false;
 
-  // Check specific item conditions
-  if (itemType === 'lockpick' && user.items.lockpick) return false;
-
   const now = Date.now();
   const THREE_HOURS = 3 * 60 * 60 * 1000;
+  const FIFTEEN_MINUTES = 15 * 60 * 1000;
 
-  switch (itemType) {
-    case 'safe':
-      user.items.safe = {
-        expiresAt: now + THREE_HOURS,
-        triggered: false,
-      };
-      break;
-    case 'bodyguard':
-      user.items.bodyguard = {
-        expiresAt: now + THREE_HOURS,
-        triggered: false,
-      };
-      break;
-    case 'lockpick':
-      user.items.lockpick = true;
-      break;
+  // Special handling for lockpick
+  if (itemType === 'lockpick') {
+    // Check cooldown
+    if (
+      user.items.lockpick?.cooldownUntil &&
+      now < user.items.lockpick.cooldownUntil
+    ) {
+      return false;
+    }
+    user.items.lockpick = {
+      expiresAt: now + FIFTEEN_MINUTES,
+      cooldownUntil: now + THREE_HOURS,
+    };
+  } else {
+    switch (itemType) {
+      case 'safe':
+        user.items.safe = {
+          expiresAt: now + THREE_HOURS,
+          triggered: false,
+        };
+        break;
+      case 'bodyguard':
+        user.items.bodyguard = {
+          expiresAt: now + THREE_HOURS,
+          triggered: false,
+        };
+        break;
+    }
   }
 
   // Deduct cost
@@ -220,11 +233,20 @@ export const getActiveItems = (userId: string): UserItems | undefined => {
   }
 
   // Check lockpick
-  if (user.items.lockpick) {
-    items.lockpick = true;
+  if (user.items.lockpick && now < user.items.lockpick.expiresAt) {
+    items.lockpick = user.items.lockpick;
   }
 
   return Object.keys(items).length > 0 ? items : undefined;
+};
+
+export const consumeLockpick = (userId: string): void => {
+  const db = readDatabase();
+  const user = db.balances.find((u) => u.userId === userId);
+  if (!user?.items?.lockpick) return;
+
+  delete user.items.lockpick;
+  writeDatabase(db);
 };
 
 export const triggerItem = (
