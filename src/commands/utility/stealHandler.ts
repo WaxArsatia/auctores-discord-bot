@@ -33,6 +33,15 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
   const thief = interaction.user;
   const target = interaction.options.getUser('target', true);
 
+  // Check if target is a bot
+  if (target.bot) {
+    await interaction.reply({
+      content: '❌ You cannot steal from bot accounts!',
+      ephemeral: true,
+    });
+    return;
+  }
+
   // Check if trying to steal from self
   if (thief.id === target.id) {
     await interaction.reply({

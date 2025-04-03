@@ -24,6 +24,16 @@ const data = new SlashCommandBuilder()
 const execute = async (interaction: ChatInputCommandInteraction) => {
   // Check if a user was specified, otherwise use the command issuer
   const targetUser = interaction.options.getUser('user') || interaction.user;
+
+  // Check if target is a bot
+  if (targetUser.bot) {
+    await interaction.reply({
+      content: '❌ Bot accounts do not have balances!',
+      ephemeral: true,
+    });
+    return;
+  }
+
   const isSelf = targetUser.id === interaction.user.id;
 
   const userBalance = getUserBalance(targetUser.id, targetUser.username);
